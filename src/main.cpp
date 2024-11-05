@@ -198,24 +198,22 @@ void write_wav_header(std::ofstream& file, int sampleRate, int bitsPerSample, in
 int main() {
     // The sentence to convert
     std::string text_entry;
-    // while (text_entry.empty()) {
-    //     std::cout << "Enter your text: ";
-    //     std::getline(std::cin, text_entry); // Reads a line of text from standard input
+    while (text_entry.empty()) {
+        std::cout << "Enter your text: ";
+        std::getline(std::cin, text_entry); // Reads a line of text from standard input
         
-    //     // Now text_entry contains the text entered by the user
-    //     std::cout << std::endl;
-    //     std::cout << "You entered: " << text_entry << std::endl;
-    // }
+        // Now text_entry contains the text entered by the user
+        std::cout << std::endl;
+        std::cout << "You entered: " << text_entry << std::endl;
+    }
 
-    text_entry = "Amid the quiet hum of the late-night city, they found themselves close, a familiar warmth sparking between them. His hand traced her jawline, their breaths merging as he leaned in. Her fingers interlaced with his, pulling him closer as anticipation simmered in the air. Each kiss was slow, lingering, exploring the unspoken promises between them. The world around faded, leaving only their whispered exchanges, gentle touches, and rising pulses. They moved together, guided by instinct and connection, losing track of time in the depths of each other. Moments later, they lay intertwined, content in the stillness that followed.";
-    
     // Get the root folder
     fs::path exec_path = fs::current_path();
     
-    std::cout << "Loading deepphonemizer..." << std::endl;
-    std::string dp_model_path = "en_us_cmudict_ipa_forward.onnx";
+    // std::cout << "Loading deepphonemizer..." << std::endl;
+    std::string dp_model_path = "models/en_us_cmudict_ipa_forward.onnx";
     DeepPhonemizer::Session dp(dp_model_path, "en_us", true, true);
-    std::cout << "Deepphonemizer init done..." << std::endl;
+    // std::cout << "Deepphonemizer init done..." << std::endl;
     std::vector<std::string> phonemes = dp.g2p(text_entry);
     for (const auto& phoneme : phonemes) {
         std::cout << phoneme << " ";
@@ -309,7 +307,7 @@ int main() {
     // session_options.SetIntraOpNumThreads(1); // set threads number as your wish
 
     // Load the ONNX model
-    fs::path model_path = exec_path / "ljs_vits2.onnx";
+    fs::path model_path = exec_path / "models/ljs_vits2.onnx";
     std::string model_path_str = model_path.string();
     std::cout << "Using model at: " << model_path_str << std::endl;
     
