@@ -70,7 +70,7 @@ class ForwardTransformerHelper(nn.Module):
             heads=config['model']['heads']
         )
 
-_checkpoint_path = "en_us_cmudict_ipa_forward.pt"
+_checkpoint_path = "models/en_us_cmudict_ipa_forward.pt"
 _device = torch.device('cpu')
 checkpoint = torch.load(_checkpoint_path, map_location=_device)
 model = ForwardTransformerHelper.from_config(config=checkpoint['config'])
@@ -89,7 +89,7 @@ torch.onnx.export(model,               # model being run
                   input_dummy,                         # model input (or a tuple for multiple inputs)
                   "en_us_cmudict_ipa_forward.onnx",   # where to save the model (can be a file or file-like object)
                   export_params=True,        # store the trained parameter weights inside the model file
-                  opset_version=17,          # the ONNX version to export the model to
+                  opset_version=20,          # the ONNX version to export the model to
                   do_constant_folding=True,  # whether to execute constant folding for optimization
                   input_names=['embedding'],
                   output_names=['custom_mihup_postprocessing'],

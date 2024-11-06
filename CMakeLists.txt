@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
+add_definitions(-D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS)
 project(main VERSION 0.0.2 DESCRIPTION "Main Executable for Neural Text to Speech" LANGUAGES CXX)
+message(STATUS "System Processor: ${CMAKE_SYSTEM_PROCESSOR}")
 
 # Enable C++17 standard
 set(CMAKE_CXX_STANDARD 17)
@@ -43,10 +45,14 @@ if(APPLE)
     target_link_libraries(main "-framework CoreFoundation" "-framework Foundation")
 endif()
 
+
+
 # Additional linker options for non-Apple platforms
 if(NOT APPLE)
     target_link_options(main PRIVATE LINKER:--build-id=none)
     target_compile_options(main PRIVATE "-ffile-prefix-map=${CMAKE_CURRENT_SOURCE_DIR}=main")
+    target_compile_options(main PRIVATE -std=gnu++17 -fpermissive)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive")
 endif()
 
 # Set the output directory for the executable
@@ -63,8 +69,7 @@ elseif(MSVC)
     target_compile_options(main PRIVATE /W4)
 endif()
 
-# Set RPATH to find ONNX Runtime library at runtime
-set_target_properties(main PROPERTIES INSTALL_RPATH "${ONNXRUNTIME_DIR}/lib")
+set_target_properties(main PROPERTIES INSTALL_RPATH ${ONNXRUNTIME_DIR}/lib)
 
 # Output messages for confirmation
 message(STATUS "Project: ${PROJECT_NAME}")

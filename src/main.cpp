@@ -6,6 +6,17 @@
 //
 
 #include <vector>
+
+#ifndef _Frees_ptr_opt_
+#define _Frees_ptr_opt_
+#endif
+
+
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
+
 #include <onnxruntime_cxx_api.h>
 #include <fstream>
 #include <iostream>
@@ -34,7 +45,13 @@ namespace fs = std::filesystem;
 std::string exec(const char* cmd) {
     std::array<char, 128> buffer;
     std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    //std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    #ifdef _WIN32
+        std::unique_ptr<FILE, decltype(&_pclose)> pipe(_popen(cmd, "r"), _pclose);
+    #else
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+    #endif
+
     if (!pipe) {
         throw std::runtime_error("popen() failed!");
     }
@@ -210,8 +227,9 @@ int main() {
     // Get the root folder
     fs::path exec_path = fs::current_path();
     
-    // std::cout << "Loading deepphonemizer..." << std::endl;
-    std::string dp_model_path = "models/en_us_cmudict_ipa_forward.onnx";
+    fs::path model_path = "D:/vits2_deepphonemizer/models/ljs_vits2.onnx";
+    std::string dp_model_path = "D:/vits2_deepphonemizer/models/en_us_cmudict_ipa_forward.onnx";
+
     DeepPhonemizer::Session dp(dp_model_path, "en_us", true, true);
     // std::cout << "Deepphonemizer init done..." << std::endl;
     std::vector<std::string> phonemes = dp.g2p(text_entry);
@@ -307,11 +325,18 @@ int main() {
     // session_options.SetIntraOpNumThreads(1); // set threads number as your wish
 
     // Load the ONNX model
-    fs::path model_path = exec_path / "models/ljs_vits2.onnx";
     std::string model_path_str = model_path.string();
     std::cout << "Using model at: " << model_path_str << std::endl;
     
-    Ort::Session session(env, model_path_str.c_str(), session_options);
+    //Ort::Session session(env, model_path_str.c_str(), session_options);
+    #ifdef _WIN32
+        // Windows-specific: convert std::string to std::wstring
+        std::wstring model_path_wstr(model_path_str.begin(), model_path_str.end());
+        Ort::Session session(env, model_path_wstr.c_str(), session_options);
+    #else
+        // Mac/Linux: use std::string directly
+        Ort::Session session(env, model_path_str.c_str(), session_options);
+    #endif
     Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
     
     int64_t text_len = elementCount;

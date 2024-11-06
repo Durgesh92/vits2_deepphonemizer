@@ -1,4 +1,7 @@
 #include "dhwani.hpp"
+#ifndef _Frees_ptr_opt_
+#define _Frees_ptr_opt_
+#endif
 #include <onnxruntime_cxx_api.h>
 #include <iostream>
 #include <sstream>
@@ -198,8 +201,24 @@ namespace DeepPhonemizer {
         Ort::SessionOptions session_options;
         session_options.SetIntraOpNumThreads(1);
         session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
+        std::cout << "loading : " << model_path << std::endl;
 
-        this->session = new Ort::Session(env, (const ORTCHAR_T *) model_path.c_str(), session_options);
+
+        try {
+            #ifdef _WIN32
+                std::wstring dp_model_path_w(model_path.begin(), model_path.end());
+                this->session = new Ort::Session(env, dp_model_path_w.c_str(), session_options);
+            #else
+                this->session = new Ort::Session(env, (const ORTCHAR_T*)model_path.c_str(), session_options);
+            #endif
+        }
+        catch (const Ort::Exception& e) {
+            std::cerr << "ONNX Runtime exception: " << e.what() << std::endl;
+            // Optionally, handle the exception further, e.g., clean up resources or rethrow
+            return;  // Adjust as necessary for your application flow
+        }
+
+        //this->session = new Ort::Session(env, (const ORTCHAR_T *) model_path.c_str(), session_options);
 
         // Load metadata from the model
         Ort::ModelMetadata model_metadata = session->GetModelMetadata();

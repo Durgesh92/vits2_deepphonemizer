@@ -28,11 +28,20 @@
  * @{
  */
 
+#ifndef _Frees_ptr_opt_
+#define _Frees_ptr_opt_
+#endif
+
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+//#ifndef _Frees_ptr_opt_
+//#define _Frees_ptr_opt_
+//#endif
+
 
 /** \brief The API version defined in this header
  *

@@ -23,7 +23,11 @@
 // have to fallback to C types and the API with the usual pitfalls. In general, do not use C API from your C++ code.
 
 #pragma once
-#include "onnxruntime_c_api.h"
+//#include "onnxruntime_c_api.h"
+extern "C" {
+#include <onnxruntime_c_api.h>
+}
+
 #include "onnxruntime_float16.h"
 
 #include <cstddef>
