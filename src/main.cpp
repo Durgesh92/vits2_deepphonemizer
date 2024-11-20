@@ -227,7 +227,7 @@ int main() {
     // Get the root folder
     fs::path exec_path = fs::current_path();
     
-    fs::path model_path = "models/pilot_joe_vits2.onnx";
+    fs::path model_path = "models/ljs_vits_2_1.onnx";
     std::string dp_model_path = "models/deep_phonemizer.onnx";
 
     DeepPhonemizer::Session dp(dp_model_path, "en_us", true, true);
