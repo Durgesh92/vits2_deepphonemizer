@@ -38,7 +38,7 @@ std::unordered_map<wchar_t, int64_t> _symbol_to_id = {
     {L'ʔ', 148}, {L'ʡ', 149}, {L'ʕ', 150}, {L'ʢ', 151}, {L'ǀ', 152}, {L'ǁ', 153}, {L'ǂ', 154}, {L'ǃ', 155},
     {L'ˈ', 156}, {L'ˌ', 157}, {L'ː', 158}, {L'ˑ', 159}, {L'ʼ', 160}, {L'ʴ', 161}, {L'ʰ', 162}, {L'ʱ', 163},
     {L'ʲ', 164}, {L'ʷ', 165}, {L'ˠ', 166}, {L'ˤ', 167}, {L'˞', 168}, {L'↓', 169}, {L'↑', 170}, {L'→', 171},
-    {L'↗', 172}, {L'↘', 173}, {L'\'', 176}, {L'̩', 175}, {L'ᵻ', 177}
+    {L'↗', 172}, {L'↘', 173}, {L'̩', 175}, {L'\'', 176}, {L'ᵻ', 177}
 };
 
 
@@ -395,7 +395,7 @@ namespace DeepPhonemizer {
         const float* output_data = output_tensors.front().GetTensorData<float>();
         std::vector<int64_t> output_shape = output_tensors.front().GetTensorTypeAndShapeInfo().GetShape();
         // Ensure the output shape is as expected: {1, 50, 53}
-        if (output_shape.size() != 3 || output_shape[0] != 1 || output_shape[1] != 50 || output_shape[2] != 53) {
+        if (output_shape.size() != 3 || output_shape[0] != 1 || output_shape[1] != 50 || output_shape[2] != 82) {
             throw std::runtime_error("Unexpected output shape from the model.");
         }
         // Decode the output: find the index with the highest probability at each position

@@ -227,8 +227,8 @@ int main() {
     // Get the root folder
     fs::path exec_path = fs::current_path();
     
-    fs::path model_path = "D:/vits2_deepphonemizer/models/ljs_vits2.onnx";
-    std::string dp_model_path = "D:/vits2_deepphonemizer/models/en_us_cmudict_ipa_forward.onnx";
+    fs::path model_path = "models/pilot_joe_vits2.onnx";
+    std::string dp_model_path = "models/deep_phonemizer.onnx";
 
     DeepPhonemizer::Session dp(dp_model_path, "en_us", true, true);
     // std::cout << "Deepphonemizer init done..." << std::endl;
@@ -263,13 +263,14 @@ int main() {
     // }
 
 
-    // std::vector<int64_t> phoneme_ids = dp.g2p_tokens(result);
+    // std::vector<int64_t> phoneme_ids = dp.g2p_tokens(text_entry);
 
-    // std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     std::vector<int64_t> phoneme_ids = dp.text_to_sequence(phoneme_string);
 
     for (const auto& id : phoneme_ids) {
-        std::cout << id << "  ";
+        std::cout << id << " ";
     }
     
     // std::vector<int64_t> phoneme_ids = {
